@@ -6,6 +6,11 @@ It emulates a simple shell environment and supports basic commands and utilities
 
 ---
 
+## ✍️ Flowchart
+
+[Flowchart-shell.png](https://postimg.cc/RqYzNdpN)
+
+---
 ## 🚀 Features
 - **Interactive Mode**: Displays a prompt (`$`) and executes commands entered by the user.
 - **Non-Interactive Mode**: Reads and executes commands from a file or pipeline.
@@ -37,7 +42,7 @@ Example of error with sh:
 echo "qwerty" | /bin/../bin/sh
 /bin/../bin/sh: 1: qwerty: not found
 $
-
+```
 Same error with our program hsh:
    ```bash
    $ echo "qwerty" | ./hsh
@@ -45,7 +50,11 @@ Same error with our program hsh:
 $ echo "qwerty" | ./././hsh
 ./././hsh: 1: qwerty: not found
 $
+```
+## 👨🏽‍💻 Authors
 
-## 
+Gwendal Martin | https://github.com/Hericksen
+
+Jean-Alain Renié | https://github.com/JaRenie-spec
 
 
