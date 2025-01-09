@@ -27,3 +27,25 @@ It emulates a simple shell environment and supports basic commands and utilities
 1. Clone the repository:
    ```bash
    git clone https://github.com/Hericksen/holbertonschool-simple_shell.git
+
+## 💾 Example
+
+Example of error with sh:
+   ```bash
+   $ echo "qwerty" | /bin/sh
+/bin/sh: 1: qwerty: not found
+echo "qwerty" | /bin/../bin/sh
+/bin/../bin/sh: 1: qwerty: not found
+$
+
+Same error with our program hsh:
+   ```bash
+   $ echo "qwerty" | ./hsh
+./hsh: 1: qwerty: not found
+$ echo "qwerty" | ./././hsh
+./././hsh: 1: qwerty: not found
+$
+
+## 
+
+
