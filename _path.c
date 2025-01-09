@@ -1,26 +1,24 @@
 #include "shell.h"
-
-
 /**
 * custom_getenv - Retrieves the value of an environment variable.
 * @name: The name of the environment variable to find.
+* @env: The environment variables array.
 *
 * Return: Pointer to the value of the environment variable,
 *         or NULL if the variable is not found.
 */
-char *custom_getenv(const char *name)
+char *custom_getenv(const char *name, char **env)
 {
 	size_t name_len;
-	char **env;
 
 	if (!name || !*name)
 		return (NULL);
 
 	name_len = strlen(name);
 
-	for (env = environ; *env != NULL; env++)
+	for (; *env != NULL; env++)
 	{
-		/* Check if the current variable starts with the name and is followed by '=' */
+/* Check if the current variable starts with the name and is followed by '=' */
 		if (strncmp(*env, name, name_len) == 0 && (*env)[name_len] == '=')
 		{
 			/* Return the value part (after the '=') */
@@ -30,15 +28,14 @@ char *custom_getenv(const char *name)
 
 	return (NULL);
 }
-
 /**
 * get_command_path - Finds the full path of a command in PATH.
 * @command: The command to locate.
-*
+* @env: The environment variables array.
 * Return: Dynamically allocated string with the full path of the command,
 *         or NULL if the command is not found or an error occurs.
 */
-char *get_command_path(char *command)
+char *get_command_path(char *command, char **env)
 {
 	char *path, *path_copy, *dir, *full_path;
 
@@ -51,8 +48,8 @@ char *get_command_path(char *command)
 			return (strdup(command));
 		return (NULL);
 	}
-
-	path = custom_getenv("PATH");
+	/* Pass env to custom_getenv*/
+	path = custom_getenv("PATH", env);
 	if (!path)
 		return (NULL);
 
@@ -80,4 +77,15 @@ char *get_command_path(char *command)
 	}
 	free(path_copy);
 	return (NULL);
+}
+/**
+* print_env - Prints the current environment variables.
+* @env: The environment variables array.
+*/
+void print_env(char **env)
+{
+	for (; *env != NULL; env++)
+	{
+		printf("%s\n", *env);
+	}
 }

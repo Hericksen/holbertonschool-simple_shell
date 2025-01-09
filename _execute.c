@@ -1,53 +1,91 @@
 #include "shell.h"
-
 /**
- * execute_command - Executes the given command
- * @command: The command to execute
+ * tokenizazion - Splits the input into tokens
+ * @input: The input string
+ *
+ * Return: Array of strings (tokens)
  */
-void execute_command(char *command)
+char **tokenizazion(char *input)
 {
-	char **args;
-	char *path;
-	pid_t child_pid;
-	int status;
+	char **tokens = NULL;
+	char *token;
+	int token_count = 0;
 
-	args = tokenize_input(command);
-	if (!args || !args[0])
-	{
-		free_args(args);
-		return;
-	}
+	tokens = malloc(sizeof(char *) * MAX_TOKENS);
+	if (!tokens)
+		return (NULL);
 
-	path = get_command_path(args[0]);
-	if (!path)
+	token = strtok(input, " \t\n");
+	while (token && token_count < MAX_TOKENS - 1)
 	{
-		fprintf(stderr, "Command not found: %s\n", args[0]);
-		free_args(args);
-		return;
+		tokens[token_count] = token;
+		token_count++;
+		token = strtok(NULL, " \t\n");
 	}
+	tokens[token_count] = NULL;
 
-	child_pid = fork();
-	if (child_pid == -1)
-	{
-		perror("fork");
-		free_args(args);
-		free(path);
-		return;
-	}
+	return (tokens);
+}
+/**
+ * execute_command - Executes the given command.
+ * @command: The command to execute.
+ * @env: The environment variables array.
+ */
+void execute_command(char *command, char **env)
+{
+    char **args;
+    char *path;
+    pid_t child_pid;
+    int status;
 
-	if (child_pid == 0)
-	{
-		if (execve(path, args, NULL) == -1)
-		{
-			perror("execve");
-			exit(EXIT_FAILURE);
-		}
-	}
-	else
-	{
-		wait(&status);
-	}
+    args = tokenizazion(command);
+    if (!args || !args[0])
+    {
+        free_args(args);
+        return;
+    }
 
-	free_args(args);
-	free(path);
+    /*Pass env to get_command_path*/
+    path = get_command_path(args[0], env);
+    if (!path)
+    {
+        fprintf(stderr, "Command not found: %s\n", args[0]);
+        free_args(args);
+        return;
+    }
+
+    child_pid = fork();
+    if (child_pid == -1)
+    {
+        perror("fork");
+        free_args(args);
+        free(path);
+        return;
+    }
+
+    if (child_pid == 0)
+    {
+        /* Pass env to execve*/
+        if (execve(path, args, env) == -1)
+        {
+            perror("execve");
+            exit(EXIT_FAILURE);
+        }
+    }
+    else
+    {
+        wait(&status);
+    }
+
+    free_args(args);
+    free(path);
+}
+/**
+ * free_args - Frees the argument array
+ * @args: The argument array to free
+ */
+void free_args(char **args)
+{
+	if (args)
+		free(args);
 }
