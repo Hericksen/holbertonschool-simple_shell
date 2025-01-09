@@ -31,7 +31,7 @@ int main(int argc, char **argv, char **env)
 		if (strcmp("exit", input) == 0)
 		{
 			free(input);
-			_exit(0); /* Utilisation de _exit pour quitter immédiatement */
+			return (2);
 		}
 
 		/* Commande "env" */
