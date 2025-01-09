@@ -11,29 +11,40 @@ int main(int argc, char **argv, char **env)
 
 	while (1)
 	{
+		/* Affichage du prompt si entrée interactive */
 		if (isatty(STDIN_FILENO))
 			write(STDOUT_FILENO, "$ ", 2);
 
+		/* Lecture de l'entrée utilisateur */
 		read_size = getline(&input, &input_size, stdin);
-		if (read_size == -1)
-			break;
+		if (read_size == -1) /* Fin du fichier ou erreur */
+		{
+			free(input);
+			_exit(0);
+		}
 
+		/* Suppression du saut de ligne */
 		if (input[read_size - 1] == '\n')
 			input[read_size - 1] = '\0';
 
+		/* Commande "exit" */
 		if (strcmp("exit", input) == 0)
 		{
 			free(input);
-			exit(0);
+			_exit(0); /* Utilisation de _exit pour quitter immédiatement */
 		}
-		else if (strcmp("env", input) == 0)
+
+		/* Commande "env" */
+		if (strcmp("env", input) == 0)
 		{
 			print_env(env);
-			continue;
+			continue; /* Retour au début de la boucle */
 		}
-		else if (strncmp("which", input, 5) == 0)
+
+		/* Commande "which" */
+		if (strncmp("which", input, 5) == 0)
 		{
-			char *command = input + 6;/*Skip "which " (5 characters + 1 space)*/
+			char *command = input + 6; /* Skip "which " (5 caractères + espace) */
 			char *path = custom_which(command, env);
 			if (path)
 			{
@@ -44,12 +55,13 @@ int main(int argc, char **argv, char **env)
 			{
 				fprintf(stderr, "Command not found: %s\n", command);
 			}
-			continue;
+			continue; /* Retour au début de la boucle */
 		}
 
+		/* Exécution d'autres commandes */
 		execute_command(input, env);
 	}
 
 	free(input);
-	return 0;
+	_exit(0); /* Ajout d'un _exit pour éviter tout comportement indéfini */
 }
