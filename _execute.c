@@ -33,59 +33,44 @@ char **tokenizazion(char *input)
  */
 void execute_command(char *command, char **env)
 {
-    char **args;
-    char *path;
-    pid_t child_pid;
-    int status;
+	char **args;
+	char *path;
+	pid_t child_pid;
+	int status;
 
-    args = tokenizazion(command);
-    if (!args || !args[0])
-    {
-        free_args(args);
-        return;
-    }
-
-    /*Pass env to get_command_path*/
-    path = get_command_path(args[0], env);
-    if (!path)
-    {
-        fprintf(stderr, "Command not found: %s\n", args[0]);
-        free_args(args);
-        return;
-    }
-
-    child_pid = fork();
-    if (child_pid == -1)
-    {
-        perror("fork");
-        free_args(args);
-        free(path);
-        return;
-    }
-
-    if (child_pid == 0)
-    {
-        /* Pass env to execve*/
-        if (execve(path, args, env) == -1)
-        {
-            perror("execve");
-            exit(EXIT_FAILURE);
-        }
-    }
-    else
-    {
-        wait(&status);
-    }
-
-    free_args(args);
-    free(path);
-}
-/**
- * free_args - Frees the argument array
- * @args: The argument array to free
- */
-void free_args(char **args)
-{
-	if (args)
+	args = tokenizazion(command);
+	if (args == NULL || args[0] == NULL)
+	{
 		free(args);
+		return;
+	}
+
+	path = get_command_path(args[0], env);
+	if (path == NULL)
+	{
+		fprintf(stderr, "Command not found: %s\n", args[0]);
+		free(args);
+		return;
+	}
+
+	child_pid = fork();
+	if (child_pid == -1)
+	{
+		perror("fork");
+	}
+	else if (child_pid == 0)
+	{
+		if (execve(path, args, env) == -1)
+		{
+			perror("execve");
+			exit(1); /* Use EXIT_FAILURE only if available */
+		}
+	}
+	else
+	{
+		wait(&status);
+	}
+
+	free(args);
+	free(path);
 }
