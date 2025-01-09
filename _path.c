@@ -24,10 +24,10 @@ char *get_command_path(char *command, char **env)
 	path = custom_getenv("PATH", env);
 	if (!path)
 		return (NULL);
+
 	path_copy = strdup(path);
 	if (!path_copy)
 		return (NULL);
-
 	dir = strtok(path_copy, ":");
 	while (dir)
 	{
