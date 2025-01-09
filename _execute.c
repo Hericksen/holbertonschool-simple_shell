@@ -74,3 +74,38 @@ void execute_command(char *command, char **env)
 	free(args);
 	free(path);
 }
+/**
+ * process_input - Handles input processing for commands.
+ * @input: Input string to process
+ * @env: Environment variables
+ * Return: 1 if successful, 0 if EOF is reached.
+ */
+int process_input(char *input, char **env)
+{
+	char *command, *path;
+
+	if (strcmp("exit", input) == 0)
+	{
+		free(input);
+		exit(0);
+	}
+	if (strcmp("env", input) == 0)
+	{
+		print_env(env);
+		return (1);
+	}
+	if (strncmp("which", input, 5) == 0)
+	{
+		command = input + 6; /* Skip "which " */
+		path = custom_which(command, env);
+		if (path)
+		{
+			printf("%s\n", path);
+			free(path);
+		}
+		else
+			fprintf(stderr, "Command not found: %s\n", command);
+		return (1);
+	}
+	return (0);
+}
