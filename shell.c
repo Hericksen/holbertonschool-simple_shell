@@ -20,7 +20,7 @@ int main(int argc, char **argv, char **env)
 		if (read_size == -1) /* Fin du fichier ou erreur */
 		{
 			free(input);
-			_exit(0);
+			_exit(EXIT_FAILURE);
 		}
 
 		/* Suppression du saut de ligne */
@@ -31,7 +31,7 @@ int main(int argc, char **argv, char **env)
 		if (strcmp("exit", input) == 0)
 		{
 			free(input);
-			return (2);
+			exit(EXIT_SUCCESS);
 		}
 
 		/* Commande "env" */
