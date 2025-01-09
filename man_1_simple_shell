@@ -1,0 +1,105 @@
+.TH SIMPLE_SHELL 1 "January 2025" "Version 1.0" "User Commands"
+
+.SH NAME
+simple_shell \- A minimal command-line shell
+
+.SH SYNOPSIS
+.B simple_shell
+.RI [ \-h ]
+
+.SH DESCRIPTION
+.B simple_shell
+is a lightweight, minimalistic command-line interpreter that provides basic functionality for executing commands and managing processes.
+
+.SH OPTIONS
+.TP
+.B \-h
+Displays help information about the shell.
+
+.SH FEATURES
+- Executes commands by searching for them in the PATH environment variable.
+- Supports input/output redirection (`<`, `>`).
+- Handles background processes using `&`.
+- Supports built-in commands:
+.TP
+.B cd [DIR]
+Change the current working directory to DIR.
+.TP
+.B exit [STATUS]
+Exit the shell with an optional exit STATUS.
+.TP
+.B help
+Display a list of built-in commands.
+
+.SH USAGE
+Start the shell by typing:
+.RS
+.B simple_shell
+.RE
+
+Enter commands as you would in a standard shell. Use redirection and pipelines for more complex operations.
+
+.SS Examples
+.TP
+Running a command:
+.EX
+ls -la
+.EE
+.TP
+Exiting the shell:
+.EX
+exit 0
+.EE
+.TP
+Running a process in the background:
+.EX
+sleep 10 &
+.EE
+.TP
+Redirecting output to a file:
+.EX
+echo "Hello, world" > output.txt
+.EE
+
+.SH ENVIRONMENT
+.TP
+.B PATH
+Used to locate executable files.
+.TP
+.B HOME
+Used by the `cd` command when no argument is provided.
+
+.SH EXIT STATUS
+The exit status is 0 for success and non-zero for failure. If a command fails,
+.B simple_shell
+returns the exit status of the last executed command.
+
+.SH FILES
+.TP
+.B README.md
+Contains detailed documentation for the project.
+.TP
+.B man_1_simple_shell
+The manual page for the shell.
+.TP
+.B AUTHORS
+Lists contributors to the repository. The authors are:
+.RS
+- Gwendal Martin
+- Jean-Alain Renie
+.RE
+
+.SH BUGS
+Report bugs to the development team.
+
+.SH AUTHOR
+Written by Gwendal Martin and Jean-Alain Renie.
+
+.SH SEE ALSO
+.B bash
+(1),
+.B sh
+(1)
+
+.SH COPYRIGHT
+This is free software; you can redistribute it and/or modify it under the terms of the MIT License.
