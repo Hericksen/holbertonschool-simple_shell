@@ -12,9 +12,10 @@
 #define MAX_TOKENS 64
 
 char **tokenizazion(char *input);
-void free_args(char **args);
-char *get_command_path(char *command, char **env);
 void execute_command(char *command, char **env);
+void free_args(char **args);
+char *custom_getenv(const char *name, char **env);
+char *get_command_path(char *command, char **env);
 void print_env(char **env);
 
 #endif
