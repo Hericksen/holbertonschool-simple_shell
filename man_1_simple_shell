@@ -1,105 +1,73 @@
-.TH SIMPLE_SHELL 1 "January 2025" "Version 1.0" "User Commands"
-
-.SH NAME
-simple_shell \- A minimal command-line shell
-
+.TH SIMPLE SHELL 09/01/2025 "simple shell manual"
+.TP
+NAME
+simple_shell - a simple Unix shell program
+.TP
 .SH SYNOPSIS
-.B simple_shell
-.RI [ \-h ]
-
+simple_shell
+.TP
 .SH DESCRIPTION
-.B simple_shell
-is a lightweight, minimalistic command-line interpreter that provides basic functionality for executing commands and managing processes.
-
-.SH OPTIONS
+simple_shell is a simple command-line shell program that simulates basic shell functionality.
+It allows the user to execute commands, with support for command arguments and the "exit" command.
 .TP
-.B \-h
-Displays help information about the shell.
-
-.SH FEATURES
-- Executes commands by searching for them in the PATH environment variable.
-- Supports input/output redirection (`<`, `>`).
-- Handles background processes using `&`.
-- Supports built-in commands:
+.SH COMMANDS
+exit
+Exit the shell program.
 .TP
-.B cd [DIR]
-Change the current working directory to DIR.
+.B <command>
+Execute the specified command, if found in the system's PATH environment variable.
 .TP
-.B exit [STATUS]
-Exit the shell with an optional exit STATUS.
-.TP
-.B help
-Display a list of built-in commands.
-
-.SH USAGE
-Start the shell by typing:
-.RS
-.B simple_shell
-.RE
-
-Enter commands as you would in a standard shell. Use redirection and pipelines for more complex operations.
-
-.SS Examples
-.TP
-Running a command:
-.EX
-ls -la
-.EE
-.TP
-Exiting the shell:
-.EX
-exit 0
-.EE
-.TP
-Running a process in the background:
-.EX
-sleep 10 &
-.EE
-.TP
-Redirecting output to a file:
-.EX
-echo "Hello, world" > output.txt
-.EE
-
-.SH ENVIRONMENT
-.TP
-.B PATH
-Used to locate executable files.
-.TP
-.B HOME
-Used by the `cd` command when no argument is provided.
-
 .SH EXIT STATUS
-The exit status is 0 for success and non-zero for failure. If a command fails,
-.B simple_shell
-returns the exit status of the last executed command.
-
+The exit status of the program is 0 on successful execution. If an error occurs (e.g., command not found),
+the program will print an error message to stderr but continue to run.
+.TP
+.SH IMPLEMENTATION
+The simple_shell program operates in a loop, prompting the user for input with a "$ " prompt when the input is from
+a terminal. The input is read using the getline function and tokenized using the tokenize_input function. Commands
+are executed by creating a child process using fork(2), and the child process executes the command with execve(2).
+If the "exit" command is entered, the program exits with status 0.
+.TP
+The following functions are implemented:
+.TP
+.BI interactive mode / non interactive mode
+Entry point for the shell program. Processes the user's input and executes commands.
+.TP
+.BI execute_command(command)
+Executes the given command by forking a child process and using execve(2). If the command is not found, an error
+message is printed.
+.TP
+.BI free_args(args)
+Frees the memory allocated for the argument array.
+.TP
+.BI custom_getenv(name)
+Retrieves the value of an environment variable. Returns NULL if the variable is not found.
+.TP
+.BI get_command_path(command)
+Finds the full path of a command in the system's PATH environment variable. Returns NULL if the command is not found.
+.TP
+.BI tokenize_input(input)
+Splits the input string into tokens (words). Returns an array of strings (tokens).
+.TP
+.SH EXAMPLES
+$ simple_shell
+$ ls -l
+$ /bin/echo Hello, World!
+$ exit
+.TP
+.SH ENVIRONMENT VARIABLES
+The program relies on the following environment variables:
+.TP
+.SH PATH
+A colon-separated list of directories to search for commands when they are executed.
+.TP
 .SH FILES
+The program does not require any external configuration files, other than the system's environment variables.
 .TP
-.B README.md
-Contains detailed documentation for the project.
-.TP
-.B man_1_simple_shell
-The manual page for the shell.
-.TP
-.B AUTHORS
-Lists contributors to the repository. The authors are:
-.RS
-- Gwendal Martin
-- Jean-Alain Renie
-.RE
-
-.SH BUGS
-Report bugs to the development team.
-
-.SH AUTHOR
-Written by Gwendal Martin and Jean-Alain Renie.
-
 .SH SEE ALSO
-.B bash
-(1),
-.B sh
-(1)
-
-.SH COPYRIGHT
-This is free software; you can redistribute it and/or modify it under the terms of the MIT License.
+execve(2), fork(2), wait(2), getenv(3), strtok(3)
+.TP
+.SH AUTHOR
+.TP
+.B [Gwendal Martin] https://github.com/Hericksen
+.TP
+.B [Jean-Alain Renié] https://github.com/JaRenie-spec
