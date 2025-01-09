@@ -6,21 +6,31 @@
  *
  * Return: The value of the environment variable or NULL if not found.
  */
-char *custom_getenv(const char *name, char **env)
+char *custom_getenv(char *name, char **env)
 {
-	int i;
-	char *env_var;
-	size_t name_len = strlen(name);
+	size_t name_len;
+	char *current;
 
-	for (i = 0; env[i] != NULL; i++)
+	if (!name || !*name)
+		return (NULL);
+
+	name_len = strlen(name);
+
+	/* Loop through each environment variable */
+	while (*env != NULL)
 	{
-		env_var = env[i];
+		current = *env;
 
-		/*Compare the beginning of the string with the environment variable name*/
-		if (strncmp(env_var, name, name_len) == 0 && env_var[name_len] == '=')
-			return (env_var + name_len + 1);
-		/* Return the value part of the environment variable*/
+	/*Check if the current variable starts with the name and is followed by '='*/
+		if (strncmp(current, name, name_len) == 0 && current[name_len] == '=')
+		{
+			/* Return the value part (after the '=') */
+			return (current + name_len + 1);
+		}
+
+		env++;
 	}
+
 	return (NULL);
 }
 /**
@@ -38,7 +48,8 @@ char *get_command_path(char *command, char **env)
 
 	if (strchr(command, '/') != NULL)
 	{
-		if (stat(command, &st) == 0 && S_ISREG(st.st_mode) && access(command, X_OK) == 0)
+		if (stat(command, &st) == 0 && S_ISREG(st.st_mode)
+		&& access(command, X_OK) == 0)
 			return (strdup(command));
 		return (NULL);
 	}
@@ -98,82 +109,58 @@ void print_env(char **env)
 	}
 }
 /**
- * custom_which - Finds the full path of a command in PATH.
+ * which - Finds the full path of a command in PATH.
  * @command: The command to locate.
  * @env: The environment variables array.
  *
  * Return: The full path of the command if found, or NULL if not.
  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-
-#define MAX_PATH_LENGTH 1024
-
-/**
- * custom_which - Searches for the command in the directories listed in PATH.
- * @cmd: The command to search for.
- * @env: The environment variables array.
- *
- * Return: Full path to the command if found, NULL otherwise.
- */
-char *custom_which(const char *cmd, char **env)
+char *custom_which(char *command, char **env)
 {
-	char full_path[MAX_PATH_LENGTH];
-	char *path_env = custom_getenv("PATH", env); /* Retrieve the PATH environment variable */
-	char *path_copy = strdup(path_env);
-	char *dir = strtok(path_copy, ":");
-	/* If the command starts with '/' or './', it's already an absolute or relative path */
-	if (cmd[0] == '/' || (cmd[0] == '.' && cmd[1] == '/'))
+	char *path, *path_copy, *dir, *full_path;
+
+	struct stat st;
+
+	if (strchr(command, '/') != NULL)
 	{
-		/* Check if the file exists and is executable */
-		if (access(cmd, X_OK) == 0)
+		/* If the command contains '/', check if it exists as-is */
+		if (stat(command, &st) == 0 && S_ISREG(st.st_mode) && access(command, X_OK) == 0)
+			return strdup(command);
+		return (NULL);
+	}
+
+	/* Retrieve PATH from the environment */
+	path = custom_getenv("PATH", env);
+	if (!path)
+		return (NULL);
+
+	path_copy = strdup(path);
+	if (!path_copy)
+		return (NULL);
+
+	dir = strtok(path_copy, ":");
+	while (dir)
+	{
+		full_path = malloc(strlen(dir) + strlen(command) + 2);
+		if (!full_path)
 		{
-			return strdup(cmd); /* Return the absolute/relative path if executable */
+			free(path_copy);
+			return (NULL);
 		}
-		return NULL; /* If not executable, return NULL */
-	}
-
-	/* Otherwise, search the directories in PATH */
-	if (path_env == NULL)
-	{
-		return NULL; /* If PATH is not set, return NULL */
-	}
-
-	/* Duplicate the PATH string for tokenization */
-	if (path_copy == NULL)
-	{
-		perror("strdup");
-		return NULL;
-	}
-
-	/* Tokenize the PATH based on the colon (':') separator */
-	while (dir != NULL)
-	{
-		/* Construct the full path to the executable */
-		full_path[0] = '\0'; /* Initialize the string to empty */
-
-		/* Concatenate the directory and command */
-		strcat(full_path, dir);
-		strcat(full_path, "/");
-		strcat(full_path, cmd);
-
-		/* Check if the file exists and is executable */
-		if (access(full_path, X_OK) == 0)
+		sprintf(full_path, "%s/%s", dir, command);
+		if (stat(full_path, &st) == 0 && S_ISREG(st.st_mode) &&
+			access(full_path, X_OK) == 0)
 		{
-			free(path_copy);		  /* Free the duplicated PATH string */
-			return strdup(full_path); /* Return the full path of the executable */
+			free(path_copy);
+			return (full_path); /* Return the full path if the command is found */
 		}
-
-		/* Move to the next directory in PATH */
+		free(full_path);
 		dir = strtok(NULL, ":");
 	}
 
-	free(path_copy); /* Free the duplicated PATH string */
-	return NULL;	 /* If the command was not found in any directory, return NULL */
+	free(path_copy);
+	return (NULL); /* Return NULL if the command was not found in PATH */
 }
-
 /**
  * handle_which_command - Handles the 'which' command in the shell.
  * @input: The user input containing the command.
@@ -181,25 +168,16 @@ char *custom_which(const char *cmd, char **env)
  */
 void handle_which_command(char *input, char **env)
 {
-	char **args = tokenizazion(input);
-	char *path = custom_which(args[1], env);
-	if (!args || !args[1])
-	{
-		fprintf(stderr, "Usage: which <command>\n");
-		free(args);
-		return;
-	}
+	char *command = input + 6; /* Skip "which " (5 characters + 1 space) */
+	char *path = custom_which(command, env);
 
-	/* Search for the executable using which */
 	if (path)
 	{
-		printf("%s found at: %s\n", args[1], path);
+		printf("%s\n", path);
 		free(path);
 	}
 	else
 	{
-		printf("%s not found in PATH.\n", args[1]);
+		fprintf(stderr, "Command not found: %s\n", command);
 	}
-
-	free(args);
 }

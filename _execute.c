@@ -40,7 +40,8 @@ char **tokenizazion(char *input)
 		/* Find the end of the current token */
 		while (*end && !strchr(delimiters, *end))
 			end++;
-		*end = '\0';				   /* Null-terminate the token */
+		; /* Null-terminate the token */
+		*end = '\0';
 		tokens[token_count++] = start; /* Store token */
 		start = end + 1;			   /* Move to the next potential token */
 	}
@@ -68,7 +69,7 @@ void execute_command(char *command, char **env)
 	}
 
 	/* Get command path from environment */
-	path = custom_which(args[0], env);
+	path = get_command_path(args[0], env);
 	if (!path)
 	{
 		fprintf(stderr, "Command not found: %s\n", args[0]);
@@ -125,3 +126,7 @@ void fork_and_execute(char **args, char *path, char **env)
 		wait(&status);
 	}
 }
+/**
+ * free_args - Frees the argument array
+ * @args: The argument array to free
+ */
