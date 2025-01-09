@@ -18,7 +18,7 @@ char *custom_getenv(const char *name, char **env)
 
 	for (; *env != NULL; env++)
 	{
-		/* Check if the current variable starts with the name and is followed by '=' */
+	/* Check if the current variable starts with the name and is followed by '='*/
 		if (strncmp(*env, name, name_len) == 0 && (*env)[name_len] == '=')
 		{
 			/* Return the value part (after the '=') */
@@ -42,7 +42,8 @@ char *get_command_path(char *command, char **env)
 	/* If the command contains '/', check if it exists as-is */
 	if (strchr(command, '/') != NULL)
 	{
-		if (stat(command, &st) == 0 && S_ISREG(st.st_mode) && access(command, X_OK) == 0)
+		if (stat(command, &st) == 0 && S_ISREG(st.st_mode)
+		&& access(command, X_OK) == 0)
 			return (strdup(command));
 		return (NULL);
 	}
@@ -65,7 +66,8 @@ char *get_command_path(char *command, char **env)
 			return (NULL);
 		}
 		sprintf(full_path, "%s/%s", dir, command);
-		if (stat(full_path, &st) == 0 && S_ISREG(st.st_mode) && access(full_path, X_OK) == 0)
+		if (stat(full_path, &st) == 0 && S_ISREG(st.st_mode)
+		&& access(full_path, X_OK) == 0)
 		{
 			free(path_copy);
 			return (full_path);
