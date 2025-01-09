@@ -13,7 +13,6 @@
 
 char **tokenizazion(char *input);
 void execute_command(char *command, char **env);
-void free_args(char **args);
 char *custom_getenv(const char *name, char **env);
 char *custom_which(char *command, char **env);
 char *get_command_path(char *command, char **env);
