@@ -8,8 +8,7 @@ It emulates a simple shell environment and supports basic commands and utilities
 
 ## ✍️ Flowchart
 
-<a href='https://uploadnow.io/files/pxwY0jx' target='_blank'><img src='https://uploadnow.io/files/pxwY0jx' border='0' alt='Flowchart-shell'/></a>
-
+<a href='https://postimg.cc/Z9PdJRvV' target='_blank'><img src='https://i.postimg.cc/Z9PdJRvV/Flowchart-shell.png' border='0' alt='Flowchart-shell'/></a>
 ---
 ## 🚀 Features
 - **Interactive Mode**: Displays a prompt (`$`) and executes commands entered by the user.
