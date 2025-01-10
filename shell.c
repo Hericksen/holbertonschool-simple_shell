@@ -19,8 +19,10 @@ int main(int argc, char **argv, char **env)
 		read_size = getline(&input, &input_size, stdin);
 		if (read_size == -1) /* Fin du fichier ou erreur */
 		{
+			if (isatty(STDIN_FILENO)) /* Si mode interactif, afficher un message */
+				write(STDOUT_FILENO, "\nExiting shell...\n", 18);
 			free(input);
-			_exit(EXIT_FAILURE);
+			_exit(EXIT_SUCCESS);
 		}
 
 		/* Suppression du saut de ligne */
