@@ -8,7 +8,7 @@ It emulates a simple shell environment and supports basic commands and utilities
 
 ## ✍️ Flowchart
 
-<a href='https://postimg.cc/RqYzNdpN' target='_blank'><img src='https://i.postimg.cc/RqYzNdpN/Flowchart-shell.png' border='0' alt='Flowchart-shell'/></a>
+<a href='https://uploadnow.io/files/pxwY0jx' target='_blank'><img src='https://uploadnow.io/files/pxwY0jx' border='0' alt='Flowchart-shell'/></a>
 
 ---
 ## 🚀 Features
