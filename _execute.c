@@ -53,24 +53,31 @@ char **tokenizazion(char *input)
  */
 void execute_command(char *command, char **env)
 {
-	char **args;
+	char **args = tokenizazion(command);
 	char *path;
 	pid_t child_pid;
 	int status;
 
-	args = tokenizazion(command);
-	if (args == NULL || args[0] == NULL)
+	if (!args || !args[0])
 	{
 		free(args);
 		return;
 	}
+
+	if (strcmp(args[0], "exit") == 0)
+	{
+		free(args);
+		exit(EXIT_SUCCESS);
+	}
+
 	path = command_path(args[0], env);
-	if (path == NULL)
+	if (!path)
 	{
 		fprintf(stderr, "Command not found: %s\n", args[0]);
 		free(args);
 		return;
 	}
+
 	child_pid = fork();
 	if (child_pid == -1)
 	{
@@ -79,7 +86,8 @@ void execute_command(char *command, char **env)
 		free(path);
 		return;
 	}
-	else if (child_pid == 0)
+
+	if (child_pid == 0)
 	{
 		if (execve(path, args, env) == -1)
 		{
@@ -90,8 +98,9 @@ void execute_command(char *command, char **env)
 		}
 	}
 	else
+	{
 		wait(&status);
+	}
 	free(args);
 	free(path);
 }
-
