@@ -1,13 +1,13 @@
 #include "shell.h"
 
 /**
-* custom_getenv - Retrieves the value of an environment variable.
-* @name: The name of the environment variable to find.
-* @env: The environment variables array.
-*
-* Return: Pointer to the value of the environment variable,
-*         or NULL if the variable is not found.
-*/
+ * custom_getenv - Retrieves the value of an environment variable.
+ * @name: The name of the environment variable to find.
+ * @env: The environment variables array.
+ *
+ * Return: Pointer to the value of the environment variable,
+ *         or NULL if the variable is not found.
+ */
 char *custom_getenv(const char *name, char **env)
 {
 	size_t name_len;
@@ -19,7 +19,7 @@ char *custom_getenv(const char *name, char **env)
 
 	for (; *env != NULL; env++)
 	{
-	/*Check if the current variable starts with the name and is followed by '='*/
+		/*Check if the current variable starts with the name and is followed by '='*/
 		if (strncmp(*env, name, name_len) == 0 && (*env)[name_len] == '=')
 		{
 			/* Return the value part (after the '=') */
@@ -30,12 +30,12 @@ char *custom_getenv(const char *name, char **env)
 	return (NULL);
 }
 /**
-* custom_which - Finds the full path of a command in PATH.
-* @command: The command to locate.
-* @env: The environment variables array.
-*
-* Return: The full path of the command if found, or NULL if not.
-*/
+ * custom_which - Finds the full path of a command in PATH.
+ * @command: The command to locate.
+ * @env: The environment variables array.
+ *
+ * Return: The full path of the command if found, or NULL if not.
+ */
 char *custom_which(char *command, char **env)
 {
 	char *path, *path_copy, *dir, *full_path;
@@ -44,8 +44,12 @@ char *custom_which(char *command, char **env)
 	if (strchr(command, '/') != NULL)
 	{
 		/* If the command contains '/', check if it exists as-is */
-		if (stat(command, &st) == 0 && S_ISREG(st.st_mode)
-		&& access(command, X_OK) == 0)
+		if (stat(command, &st) == -1)
+		{
+			perror("Error checking file");
+			return (NULL);
+		}
+		if (stat(command, &st) == 0 && S_ISREG(st.st_mode) && access(command, X_OK) == 0)
 			return (strdup(command));
 		return (NULL);
 	}
@@ -68,7 +72,7 @@ char *custom_which(char *command, char **env)
 		}
 		sprintf(full_path, "%s/%s", dir, command);
 		if (stat(full_path, &st) == 0 && S_ISREG(st.st_mode) &&
-		access(full_path, X_OK) == 0)
+			access(full_path, X_OK) == 0)
 		{
 			free(path_copy);
 			return (full_path); /* Return the full path if the command is found */
