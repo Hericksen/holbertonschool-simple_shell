@@ -57,6 +57,7 @@ void execute_command(char *command, char **env)
 	if (child_pid == -1)
 	{
 		perror("fork");
+		return;
 	}
 	else if (child_pid == 0)
 	{
@@ -70,7 +71,6 @@ void execute_command(char *command, char **env)
 	{
 		wait(&status);
 	}
-
 	free(args);
 	free(path);
 }

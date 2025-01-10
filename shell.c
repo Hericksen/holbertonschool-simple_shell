@@ -11,42 +11,42 @@ int main(int argc, char **argv, char **env)
 
 	while (1)
 	{
-		/* Affichage du prompt si entrée interactive */
+		/* Show the prompt in interactive */
 		if (isatty(STDIN_FILENO))
 			write(STDOUT_FILENO, "$ ", 2);
 
-		/* Lecture de l'entrée utilisateur */
+		/* Read input */
 		read_size = getline(&input, &input_size, stdin);
-		if (read_size == -1) /* Fin du fichier ou erreur */
+		if (read_size == -1) /* Eof or error */
 		{
-			if (isatty(STDIN_FILENO)) /* Si mode interactif, afficher un message */
+			if (isatty(STDIN_FILENO)) /* If interactive, display a message */
 				write(STDOUT_FILENO, "\nExiting shell...\n", 18);
 			free(input);
 			_exit(EXIT_SUCCESS);
 		}
 
-		/* Suppression du saut de ligne */
+		/* Delete the \n */
 		if (input[read_size - 1] == '\n')
 			input[read_size - 1] = '\0';
 
-		/* Commande "exit" */
+		/* Command "exit" */
 		if (strcmp("exit", input) == 0)
 		{
 			free(input);
 			exit(EXIT_SUCCESS);
 		}
 
-		/* Commande "env" */
+		/* Command "env" */
 		if (strcmp("env", input) == 0)
 		{
 			print_env(env);
-			continue; /* Retour au début de la boucle */
+			continue; /* Come back to the start of the loop */
 		}
 
-		/* Commande "which" */
+		/* Command "which" */
 		if (strncmp("which", input, 5) == 0)
 		{
-			char *command = input + 6; /* Skip "which " (5 caractères + espace) */
+			char *command = input + 6; /* Skip "which " (5 char + space) */
 			char *path = custom_which(command, env);
 			if (path)
 			{
@@ -57,13 +57,13 @@ int main(int argc, char **argv, char **env)
 			{
 				fprintf(stderr, "Command not found: %s\n", command);
 			}
-			continue; /* Retour au début de la boucle */
+			continue; /* Come to the begin of the loop */
 		}
 
-		/* Exécution d'autres commandes */
+		/* Exec other commands */
 		execute_command(input, env);
 	}
 
 	free(input);
-	_exit(0); /* Ajout d'un _exit pour éviter tout comportement indéfini */
+	_exit(0);
 }
