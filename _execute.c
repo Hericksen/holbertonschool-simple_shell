@@ -59,7 +59,7 @@ void execute_command(char *command, char **env)
 		free(args);
 		exit(EXIT_FAILURE);
 	}
-	path = get_command_path(args[0], env);
+	path = command_path(args[0], env);
 	if (path == NULL)
 	{
 		fprintf(stderr, "Command not found: %s\n", args[0]);

@@ -1,13 +1,13 @@
 #include "shell.h"
 
 /**
-* get_command_path - Finds the full path of a command in PATH.
+* command_path - Finds the full path of a command in PATH.
 * @command: The command to locate.
 * @env: The environment variables array.
 * Return: Dynamically allocated string with the full path of the command,
 *         or NULL if the command is not found or an error occurs.
 */
-char *get_command_path(char *command, char **env)
+char *command_path(char *command, char **env)
 {
 	char *path, *path_copy, *dir, *full_path;
 
