@@ -33,6 +33,11 @@ char **tokenizazion(char *input)
 	{
 		tokens[token_count] = token; /* Store the token in the array */
 		token_count++;
+		if (token_count >= max_possible_tokens)
+		{
+			free(tokens);
+			return (NULL);
+		}
 		token = strtok(NULL, " \t\n"); /* Get the next token */
 	}
 
