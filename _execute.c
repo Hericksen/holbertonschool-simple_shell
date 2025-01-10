@@ -57,15 +57,14 @@ void execute_command(char *command, char **env)
 	if (args == NULL || args[0] == NULL)
 	{
 		free(args);
-		exit(EXIT_FAILURE);
+		return;
 	}
 	path = command_path(args[0], env);
 	if (path == NULL)
 	{
 		fprintf(stderr, "Command not found: %s\n", args[0]);
 		free(args);
-		free(path);
-		exit(EXIT_FAILURE);
+		return;
 	}
 	child_pid = fork();
 	if (child_pid == -1)
@@ -73,7 +72,7 @@ void execute_command(char *command, char **env)
 		perror("fork");
 		free(args);
 		free(path);
-		exit(EXIT_FAILURE);
+		return;
 	}
 	else if (child_pid == 0)
 	{
@@ -82,7 +81,7 @@ void execute_command(char *command, char **env)
 			perror("execve");
 			free(args);
 			free(path);
-			exit(EXIT_FAILURE); /* Use EXIT_FAILURE only if available */
+			exit(EXIT_FAILURE);
 		}
 	}
 	else
@@ -90,3 +89,4 @@ void execute_command(char *command, char **env)
 	free(args);
 	free(path);
 }
+
