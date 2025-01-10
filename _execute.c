@@ -8,16 +8,15 @@
  */
 char **tokenizazion(char *input)
 {
-	char **tokens = NULL;		/* Pointer to store the array of tokens */
-	char *token;				/* Pointer to the current token */
-	size_t token_count = 0;		/* Number of tokens found */
-	size_t input_length;		/* Length of the input string */
-	size_t max_possible_tokens; /* Maximum number of tokens (estimated) */
+	char **tokens = NULL;
+	char *token;
+	size_t token_count = 0;
+	size_t input_length;
+	size_t max_possible_tokens;
 
-	if (input == NULL) /* Check for null input */
+	if (input == NULL)
 		return (NULL);
 
-	/* Calculate the length of the input string */
 	input_length = strlen(input);
 
 	/* Estimate the maximum number of tokens:*/
@@ -68,11 +67,12 @@ void execute_command(char *command, char **env)
 		free(args);
 		return;
 	}
-
 	child_pid = fork();
 	if (child_pid == -1)
 	{
 		perror("fork");
+		free(args);
+		free(path);
 		return;
 	}
 	else if (child_pid == 0)
@@ -84,9 +84,7 @@ void execute_command(char *command, char **env)
 		}
 	}
 	else
-	{
 		wait(&status);
-	}
 	free(args);
 	free(path);
 }
