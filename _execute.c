@@ -57,13 +57,14 @@ void execute_command(char *command, char **env)
 	if (args == NULL || args[0] == NULL)
 	{
 		free(args);
-		return;
+		exit(EXIT_FAILURE);
 	}
 	path = get_command_path(args[0], env);
 	if (path == NULL)
 	{
 		fprintf(stderr, "Command not found: %s\n", args[0]);
 		free(args);
+		free(path);
 		exit(EXIT_FAILURE);
 	}
 	child_pid = fork();
