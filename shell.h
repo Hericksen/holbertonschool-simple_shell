@@ -9,8 +9,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#define MAX_TOKENS 1024
-
 char **tokenizazion(char *input);
 void execute_command(char *command, char **env);
 char *custom_getenv(const char *name, char **env);

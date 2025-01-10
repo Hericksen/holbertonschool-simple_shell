@@ -20,9 +20,9 @@ int main(int argc, char **argv, char **env)
 		if (read_size == -1) /* Eof or error */
 		{
 			if (isatty(STDIN_FILENO)) /* If interactive, display a message */
-				write(STDOUT_FILENO, "\nExiting shell...\n", 18);
+				write(STDOUT_FILENO, "\n", 1);
 			free(input);
-			_exit(EXIT_SUCCESS);
+			exit(EXIT_SUCCESS);
 		}
 
 		/* Delete the \n */
@@ -65,5 +65,5 @@ int main(int argc, char **argv, char **env)
 	}
 
 	free(input);
-	_exit(0);
+	exit(0);
 }
