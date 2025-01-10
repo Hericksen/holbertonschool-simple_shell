@@ -1,30 +1,46 @@
 #include "shell.h"
 /**
- * tokenizazion - Splits the input into tokens
- * @input: The input string
+ * tokenizazion - Tokenizes a string into an array of words.
+ * @input: The input string to tokenize. This string is modified in-place.
  *
- * Return: Array of strings (tokens)
+ * Return: A dynamically allocated array of tokens, ending with NULL.
+ *         Returns NULL on memory allocation failure.
  */
 char **tokenizazion(char *input)
 {
-	char **tokens = NULL;
-	char *token;
-	int token_count = 0;
+	char **tokens = NULL;		/* Pointer to store the array of tokens */
+	char *token;				/* Pointer to the current token */
+	size_t token_count = 0;		/* Number of tokens found */
+	size_t input_length;		/* Length of the input string */
+	size_t max_possible_tokens; /* Maximum number of tokens (estimated) */
 
-	tokens = malloc(sizeof(char *) * MAX_TOKENS);
-	if (!tokens)
+	if (input == NULL) /* Check for null input */
 		return (NULL);
 
-	token = strtok(input, " \t\n");
-	while (token && token_count < MAX_TOKENS - 1)
+	/* Calculate the length of the input string */
+	input_length = strlen(input);
+
+	/* Estimate the maximum number of tokens:*/
+	max_possible_tokens = input_length / 2 + 1;
+
+	/* Allocate memory for the array of tokens */
+	tokens = (char **)malloc((max_possible_tokens + 1) * sizeof(char *));
+	if (tokens == NULL) /* Check for allocation failure */
+		return (NULL);
+
+	/* Tokenize the input string using strtok */
+	token = strtok(input, " \t\n"); /* Split on spaces, tabs, or newlines */
+	while (token != NULL)
 	{
-		tokens[token_count] = token;
+		tokens[token_count] = token; /* Store the token in the array */
 		token_count++;
-		token = strtok(NULL, " \t\n");
+		token = strtok(NULL, " \t\n"); /* Get the next token */
 	}
+
+	/* Null-terminate the array of tokens */
 	tokens[token_count] = NULL;
 
-	return (tokens);
+	return (tokens); /* Return the array of tokens */
 }
 /**
  * execute_command - Executes the given command.
